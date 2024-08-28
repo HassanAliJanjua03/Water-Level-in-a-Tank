@@ -1,0 +1,109 @@
+classdef WaterPumpApp < matlab.apps.AppBase
+
+    % Properties that correspond to app components
+    properties (Access = public)
+        UIFigure       matlab.ui.Figure
+        WaterLevelLabel  matlab.ui.control.Label
+        PumpStatusLabel  matlab.ui.control.Label
+        StartButton    matlab.ui.control.Button
+    end
+
+    properties (Access = private)
+        Timer           % Timer object to update water level and pump status
+    end
+    
+    methods (Access = private)
+        
+        function updateWaterLevelAndStatus(app)
+            % Placeholder for actual sensor reading code
+            % Replace this with code to read from the sensor
+            
+            waterLevel = randi([0, 10]); % Simulated water level
+            pumpStatus = 'OFF';          % Simulated pump status
+            
+            if waterLevel <= 5
+                pumpStatus = 'ON';
+            end
+            
+            % Update the labels
+            app.WaterLevelLabel.Text = ['Water Level: ', num2str(waterLevel), ' cm'];
+            app.PumpStatusLabel.Text = ['Pump Status: ', pumpStatus];
+        end
+        
+    end
+    
+    methods (Access = private)
+
+        % Code to execute after component creation
+        function startupFcn(app)
+            app.Timer = timer('ExecutionMode', 'fixedRate', ...
+                'Period', 1, ... % Update every second
+                'TimerFcn', @(~,~) app.updateWaterLevelAndStatus());
+        end
+
+        % Button pushed function: StartButton
+        function StartButtonPushed(app, event)
+            if strcmp(app.Timer.Running, 'off')
+                start(app.Timer);
+                app.StartButton.Text = 'Stop Monitoring';
+            else
+                stop(app.Timer);
+                app.StartButton.Text = 'Start Monitoring';
+            end
+        end
+    end
+
+    % Component initialization
+    methods (Access = private)
+
+        % Create UIFigure and components
+        function createComponents(app)
+
+            % Create UIFigure and hide until all components are created
+            app.UIFigure = uifigure('Visible', 'off');
+            app.UIFigure.Position = [100 100 400 300];
+            app.UIFigure.Name = 'MATLAB App';
+
+            % Create WaterLevelLabel
+            app.WaterLevelLabel = uilabel(app.UIFigure);
+            app.WaterLevelLabel.HorizontalAlignment = 'right';
+            app.WaterLevelLabel.Position = [100 220 200 22];
+            app.WaterLevelLabel.Text = 'Water Level: ';
+
+            % Create PumpStatusLabel
+            app.PumpStatusLabel = uilabel(app.UIFigure);
+            app.PumpStatusLabel.HorizontalAlignment = 'right';
+            app.PumpStatusLabel.Position = [100 180 200 22];
+            app.PumpStatusLabel.Text = 'Pump Status: ';
+
+            % Create StartButton
+            app.StartButton = uibutton(app.UIFigure, 'push');
+            app.StartButton.Position = [150 120 100 22];
+            app.StartButton.Text = 'Start Monitoring';
+            app.StartButton.ButtonPushedFcn = createCallbackFcn(app, @StartButtonPushed, true);
+
+            % Show the figure after all components are created
+            app.UIFigure.Visible = 'on';
+        end
+    end
+
+    methods (Access = public)
+
+        % Construct app
+        function app = WaterPumpApp
+
+            % Create and configure components
+            createComponents(app)
+
+            % Execute the startup function
+            startupFcn(app)
+        end
+
+        % Code to execute before app deletion
+        function delete(app)
+
+            % Delete timer
+            delete(app.Timer)
+        end
+    end
+end
