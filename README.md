@@ -19,14 +19,23 @@ flowchart LR
 - MATLAB app with start/stop monitoring and a one-second timer.
 - Simulated level readings of 0–10 cm; pump ON at or below 5 cm.
 
+## Monitoring logic
+
+| Simulated input | Displayed pump state |
+| --- | --- |
+| 0–5 cm | ON |
+| Above 5–10 cm | OFF |
+
+The interface refreshes once per second while monitoring is enabled. These are software rules from the original application, not physical measurements.
+
 ## Project files
 
 | File | Purpose |
 | --- | --- |
-| [Project Report.pdf](Project%20Report.pdf) | Original source or design file |
-| [WaterLevelTank.mp4](WaterLevelTank.mp4) | Original source or design file |
-| [WaterPump.slx](WaterPump.slx) | Original source or design file |
-| [WaterPumpApp.m.txt](WaterPumpApp.m.txt) | Original source or design file |
+| [Project Report.pdf](Project%20Report.pdf) | Engineering report (PDF) |
+| [WaterLevelTank.mp4](WaterLevelTank.mp4) | Original demonstration video |
+| [WaterPump.slx](WaterPump.slx) | Simulink model |
+| [WaterPumpApp.m.txt](WaterPumpApp.m.txt) | MATLAB app source (text) |
 
 ## How to explore or reproduce
 
